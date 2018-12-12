@@ -7,10 +7,9 @@ Created on Mon Dec 10 11:12:40 2018
 
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtWidgets import (QPushButton, QApplication)
-import array as arr
 
 import sys
-
+        
 class Ui(QtWidgets.QDialog):
     grid00 = [
         ["pushButton_00_00",	"pushButton_00_01",	"pushButton_00_02"],
@@ -59,19 +58,29 @@ class Ui(QtWidgets.QDialog):
         ["pushButton_22_10",	"pushButton_22_11",	"pushButton_22_12"],
         ["pushButton_22_20",	"pushButton_22_21",	"pushButton_22_22"]
         ]
-    i = 9
+    gridTotal = [
+            [grid00, grid01, grid02], [grid10, grid11, grid12], [grid20, grid21, grid22]
+            ]
+    
     def __init__(self):
         super(Ui, self).__init__()
         uic.loadUi('guiSudoku.ui', self)
-        #self.line = self.findChild(QPushButton, 'pushButton_50')
-        
-        
-        btn = self.findChild(QPushButton, 'pushButton_00_00')
-        btn.clicked.connect(self.ok_handler)
+        #self.line = self.findChild(QPushButton, 'pushButton_50')                
+        #btArray[0][0] = self.findChild(QPushButton, self.grid00[0][0])
+        #btArray[0][0].clicked.connect(self.ok_handler)
+        self.mappingButton()
         self.show()
         
-    def ok_handler(self):
-        print(self.grid00[0][0])
+    def mappingButton(self):
+        btArray = [[0 for i in range(3)] for i in range(3)]        
+        for i in range(3):
+            for j in range(3):
+                btArray[i][j] = self.findChild(QPushButton, self.grid00[i][j])
+                btArray[i][j].clicked.connect(self.pushButton00_handler)       
+                
+    def pushButton00_handler(self):        
+        print(self.grid00[0][0])    
+    
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     window = Ui()

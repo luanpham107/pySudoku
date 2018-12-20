@@ -3,6 +3,7 @@ from pprint import pprint
 from PyQt5.QtWidgets import (QWidget, QGridLayout,QPushButton, QApplication)
 
 class TutorialWindow(QWidget):
+    buttonList = []
     def __init__(self):
         super().__init__()
         grid_layout = QGridLayout()
@@ -38,6 +39,7 @@ class TutorialWindow(QWidget):
                 continue
             button = QPushButton(value)   
             button.clicked.connect(self.buttonClicked)
+            self.buttonList.append(button)
             grid_layout.addWidget(button, *position)
         self.setWindowTitle('Sudoku')
         
@@ -58,14 +60,20 @@ class TutorialWindow(QWidget):
             text = 0
         sender.setText(str(text))
         print(text)
+        self.checkCol()
         print('Clicked')
         
     def checkCol(self):
+        for i in range(8):
+            print(self.buttonList[i])
         print('Col')
+        
     def checkRơw(self):
         print('Row')
+
     def checkGrid(self):
         print('Grid')
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     pprint("input parameters = " + str(sys.argv))

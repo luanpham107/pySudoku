@@ -10,7 +10,6 @@ class TutorialWindow(QWidget):
         lines = self.readPuzzle("puzzle.txt");  
         
         print(lines)
-        
         values = [
             '1', '1', '1', '1', '1', '1', '1', '1', '1',
             '1', '1', '1', '1', '1', '1', '1', '1', '1',
@@ -37,7 +36,8 @@ class TutorialWindow(QWidget):
             print("value = " + str(value))
             if value == '':
                 continue
-            button = QPushButton(value)            
+            button = QPushButton(value)   
+            button.clicked.connect(self.buttonClicked)
             grid_layout.addWidget(button, *position)
         self.setWindowTitle('Sudoku')
         
@@ -50,6 +50,22 @@ class TutorialWindow(QWidget):
                 array.append(lineY)        
         return array
 
+    def buttonClicked(self):
+        sender = self.sender()
+        print(sender)
+        text = int(sender.text()) + 1
+        if(text > 9):
+            text = 0
+        sender.setText(str(text))
+        print(text)
+        print('Clicked')
+        
+    def checkCol(self):
+        print('Col')
+    def checkRơw(self):
+        print('Row')
+    def checkGrid(self):
+        print('Grid')
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     pprint("input parameters = " + str(sys.argv))

@@ -57,23 +57,37 @@ class TutorialWindow(QWidget):
         print(sender)
         text = int(sender.text()) + 1
         if(text > 9):
-            text = 0
+            text = 1
         sender.setText(str(text))
         print(text)
         self.checkCol()
         print('Clicked')
         
     def checkCol(self):
-        for i in range(8):
-            print(self.buttonList[i])
+        _colList = []
+        for i in range(9):
+            _colList.append(int(self.buttonList[i].text()))
+        self.checkListFullNumber(_colList)
+        print(_colList)
         print('Col')
         
     def checkRơw(self):
         print('Row')
 
     def checkGrid(self):
-        print('Grid')
-
+        print('Grid')    
+    
+    def checkListFullNumber(self, arrIn):
+        arrIn.sort()
+        print('Sort the list:', arrIn)
+        for i in range(9):
+            #print(i+1, ' so sanh voi ', arrIn[i])            
+            if arrIn[i] != i+1:
+                print ('Aray check: False')
+                return False            
+        print('Array check: True')        
+        return True        
+        
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     pprint("input parameters = " + str(sys.argv))

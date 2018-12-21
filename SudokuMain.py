@@ -1,7 +1,7 @@
 import sys
 from pprint import pprint
 from PyQt5.QtWidgets import (QWidget, QGridLayout,QPushButton, QApplication)
-
+from PyQt5 import Qt, QtGui, QtCore
 class TutorialWindow(QWidget):
     buttonList = []
     def __init__(self):
@@ -52,7 +52,7 @@ class TutorialWindow(QWidget):
                 array.append(lineY)        
         return array
 
-    def buttonClicked(self):
+    def buttonClicked(self, event):
         sender = self.sender()
         print(sender)
         text = int(sender.text()) + 1
@@ -60,15 +60,24 @@ class TutorialWindow(QWidget):
             text = 1
         sender.setText(str(text))
         print(text)
-        self.checkCol()
-        print('Clicked')
-        
+        self.checkCol()        
+        print('Kieu event: ', sender.event)
+#        if sender.event.type() == QtCore.QEvent.MouseButtonPress and event.button() & QtCore.Qt.LeftButton:
+#            print ('Left clicked')
+#        elif sender.event.type() == QtCore.QEvent.MouseButtonRelease and event.button() & QtCore.Qt.LeftButton:
+#            print ('Right clicked')            
+#        if QApplication.mouseButtons() == QtCore.QEvent.MouseButtonPress:
+#            print('Right clicked')
+#        else:
+#            print('Left Clicked')
+            
     def checkCol(self):
         _colList = []
         for i in range(9):
-            _colList.append(int(self.buttonList[i].text()))
-        self.checkListFullNumber(_colList)
-        print(_colList)
+            for j in range(9):
+                _colList.append(int(self.buttonList[i*8+j].text()))
+            self.checkListFullNumber(_colList)
+            _colList = []        
         print('Col')
         
     def checkRơw(self):
@@ -87,7 +96,18 @@ class TutorialWindow(QWidget):
                 return False            
         print('Array check: True')        
         return True        
-        
+    
+    def mousePressEvent(self, event):        
+        sendingButton = self.sender
+        if event.button() == QtCore.Qt.RightButton:
+            print ('mousePressEvent- Right', event.screenPos())
+            print ('mousePressEvent- Right', event.flags())
+            print ('mousePressEvent- Right', event.source())
+            print ('mousePressEvent- Right', event.x())
+            print (sendingButton)
+        else:
+            print ('mousePressEvent- Left')        
+    
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     pprint("input parameters = " + str(sys.argv))

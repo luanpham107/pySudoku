@@ -3,10 +3,17 @@ import math
 import time
 import random
 
+from PyQt5 import QtCore
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
+from enum import Enum
 from PyQt5.QtWidgets import (QPushButton, QApplication, QDialog, QGridLayout, 
                              QVBoxLayout, QHBoxLayout, QLabel)
+
+class CellAction(Enum):
+	UP = 10,
+	DOWN = 20,
+	CLEAR = 30,
 
 # Configurations of apperance
 # Basic theme
@@ -86,7 +93,12 @@ class SudokuCell(QLabel):
 	# Update the number of current cell
 	def setElement(self, elem = 0):
 		if (not self.isStatic()):
-			self.elem = elem
+			if(elem == CellAction.DOWN):
+				self.elem = self.elem - 1
+			elif(elem == CellAction.UP):
+				self.elem = self.elem + 1
+			else:
+				self.elem = elem
 			# Emit the corresponding signal to notify the parent-class
 			#self.emit(SIGNAL('elementChanged(PyQt_PyObject)'), self)
 		self.setText(str(self.elem))
@@ -112,11 +124,11 @@ class SudokuCell(QLabel):
 	def focusOutEvent(self, event):
 		self.colorCell()
 
-	# Mouse input
-	def mouseReleaseEvent(self, event):
-		if (not event.button() == Qt.LeftButton):
-			# Clear the index
-			self.setElement(0)
+	# # Mouse input
+	# def mouseReleaseEvent(self, event):
+	# 	if (not event.button() == Qt.LeftButton):
+	# 		# Clear the index
+	# 		self.setElement(0)
 
 	# Keyboard input
 	def keyPressEvent(self, event):
@@ -124,6 +136,19 @@ class SudokuCell(QLabel):
 			self.emit(SIGNAL('quitGame(PyQt_PyObject)'), self)
 		elif (event.key() >= Qt.Key_0 and event.key() <= Qt.Key_9):
 			self.setElement(event.key() - Qt.Key_0)
+
+	def mousePressEvent(self, event):        
+		sendingButton = self.sender
+		if event.button() == QtCore.Qt.RightButton:
+			print ('mousePressEvent- Right', event.screenPos())
+			print ('mousePressEvent- Right', event.flags())
+			print ('mousePressEvent- Right', event.source())
+			print ('mousePressEvent- Right', event.x())
+			print (sendingButton)
+			self.setElement(CellAction.DOWN)
+		else:
+			print ('mousePressEvent- Left')	
+			self.setElement(CellAction.UP)
 
 # The main UI
 class SudokuDialog(QDialog):
@@ -337,7 +362,7 @@ class SudokuDialog(QDialog):
 		if (event.key() == Qt.Key_Escape):
 			self.quit()
 		elif (event.key() == Qt.Key_F2):
-			self.newGame()		
+			self.newGame()	
 
 def startGame():
 	sudoku_app = QApplication(sys.argv)

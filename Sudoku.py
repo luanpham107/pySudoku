@@ -92,11 +92,21 @@ class SudokuCell(QLabel):
 
 	# Update the number of current cell
 	def setElement(self, elem = 0):
+		if self.elem == 0:
+			self.elem = 5
+			self.setText(str(self.elem))
+			self.update()		
+			self.colorCell()
+			return
 		if (not self.isStatic()):
 			if(elem == CellAction.DOWN):
 				self.elem = self.elem - 1
+				if self.elem == 0:
+					self.elem = 9
 			elif(elem == CellAction.UP):
 				self.elem = self.elem + 1
+				if self.elem == 9:
+					self.elem = 1 
 			else:
 				self.elem = elem
 			# Emit the corresponding signal to notify the parent-class

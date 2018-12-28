@@ -3,12 +3,12 @@ import math
 import time
 import random
 
-from PyQt5 import QtCore
+from PyQt5 import QtCore, QtWidgets, QtGui
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 from enum import Enum
 from PyQt5.QtWidgets import (QPushButton, QApplication, QDialog, QGridLayout, 
-                             QVBoxLayout, QHBoxLayout, QLabel)
+                             QVBoxLayout, QHBoxLayout, QLabel, QMessageBox)
 
 class CellAction(Enum):
 	UP = 10,
@@ -162,6 +162,7 @@ class SudokuCell(QLabel):
 
 # The main UI
 class SudokuDialog(QDialog):
+	Finish = True
 	#
 	def __init__(self, level = 0, theme = SudokuTheme(), parent = None):
 		super(QDialog, self).__init__(parent)
@@ -196,7 +197,7 @@ class SudokuDialog(QDialog):
         
 		self.solution_button = QPushButton('Check')
 		self.solution_button.setStyleSheet(self.theme.button_ss)
-		self.solution_button.clicked.connect(self.fillSolution)
+		self.solution_button.clicked.connect(self.checkResultMessageBox)
 		# The panel layout
 		self.panel_layout = QHBoxLayout()
 		self.panel_layout.addStretch()
@@ -291,10 +292,10 @@ class SudokuDialog(QDialog):
 		# 		if (self.grid[index].isStatic()):
 		# 			self.grid[index] = SudokuCell(0, self.theme)
 		# 			break
-		# # Backup all the elements
-		# self.backup_elements = []
-		# for i in range(81):
-		# 	self.backup_elements.append(self.grid[i].getElement())
+		# Backup all the elements
+		self.backup_elements = []
+		for i in range(81):
+			self.backup_elements.append(self.grid[i].getElement())
 
 	# Fill the elements
 	def fillGrids(self):
@@ -330,10 +331,6 @@ class SudokuDialog(QDialog):
 		self.fillGrids()
 		# Update the appearance
 		self.update()
-
-	def fillSolution(self):
-		self.update()
-		print('Solution not implemented.')
 	
 	# Main loop of current game
 	def update(self):
@@ -353,20 +350,40 @@ class SudokuDialog(QDialog):
 					elem = self.grid[i * 9 + j].getElement()
 					row[i].add(elem)
 					col[j].add(elem)
-					box[(i // 3) * 3 + (j // 3)].add(elem)
-		finish = True
+					box[(i // 3) * 3 + (j // 3)].add(elem)		
 		for i in range(9):
 			if (len(row[i]) < 9 or len(col[i]) < 9 or len(box[i]) < 9):
-				finish = False
-				print('Check row col status: ', finish)
+				self.Finish = False
+				print('Check row col status: ', self.Finish)				
 				break
-		if (finish):
-			print("You win ^_^")
+		if (self.Finish):
+			print("Done Game!")
 
 	# Quit game
 	def quit(self):
-		self.close()
+		self.close()	
 
+	def checkResultMessageBox(self):
+		self.update()
+		print('your result', self.Finish)
+		if(self.Finish):
+			choice = QMessageBox.question(self, 'Result!',
+                                            'You won, restart ?',
+                                            QMessageBox.Yes | QMessageBox.No)
+			if choice == QMessageBox.Yes:
+				self.newGame()
+				print("Continue")
+				sys.exit()
+			else:
+				pass
+		else:
+			choice = QMessageBox.question(self, 'Result!',
+                                            'You are not complete the board, continue ?',
+                                            QMessageBox.Yes | QMessageBox.No)
+			if choice == QMessageBox.Yes:
+				pass
+			else:
+				sys.exit()
 	#
 	def keyPressEvent(self, event):
 		if (event.key() == Qt.Key_Escape):

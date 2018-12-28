@@ -194,7 +194,7 @@ class SudokuDialog(QDialog):
 		self.restart_button.setStyleSheet(self.theme.button_ss)
 		self.restart_button.clicked.connect(self.restartGame)
         
-		self.solution_button = QPushButton('Solution')
+		self.solution_button = QPushButton('Check')
 		self.solution_button.setStyleSheet(self.theme.button_ss)
 		self.solution_button.clicked.connect(self.fillSolution)
 		# The panel layout
